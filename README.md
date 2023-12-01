@@ -1,6 +1,6 @@
-# AdventOfCode2022
+# AdventOfCode2023
 
-2022 Advent of Code Solutions
+2023 Advent of Code Solutions
 
 ## Progress
 
