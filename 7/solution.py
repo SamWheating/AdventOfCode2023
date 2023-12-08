@@ -75,10 +75,9 @@ def camel_compare(hand1, hand2, jokers: bool = False) -> int:
     if jokers:
         precedence.remove("J")
         precedence.append("J")
-    if camel_classify(hand1, jokers) > camel_classify(hand2, jokers):
-        return 1
-    if camel_classify(hand1, jokers) < camel_classify(hand2, jokers):
-        return -1
+    diff = camel_classify(hand1, jokers) - camel_classify(hand2, jokers)
+    if diff != 0:
+        return diff/abs(diff)
     for i, c in enumerate(hand1):
         if precedence.index(c) < precedence.index(hand2[i]):
             return 1
@@ -115,4 +114,4 @@ total = 0
 for i, hand in enumerate(hands):
     total += (1 + i) * hand.bid
 
-print(f"Part 1: {total}")
+print(f"Part 2: {total}")
