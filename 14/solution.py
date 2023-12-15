@@ -33,14 +33,14 @@ def rotate_cw(rocks: List[List]) -> List[List]:
     # create a 90deg CW rotated copy of an array
     new_rocks = []
     for x in range(len(rocks[0])):
-        col = [row[x] for row in rocks]
-        new_rocks.append(col[::-1])
+        new_rocks.append([row[x] for row in rocks][::-1])
 
     return new_rocks
 
 assert rotate_cw([[1,2],[3,4]]) == [[3,1],[4,2]]
 
 def spin(rocks: List[List]) -> List[List]:
+    # tilting north, west, south, east is equivalent to 4x (tilt north, rotate 90deg cw)
     for _ in range(4):
         rocks = rotate_cw(tilt_rocks(rocks))
     return rocks
@@ -61,13 +61,16 @@ print(f"Part 1: {get_load(rocks)}")
 # part 2
 seen = {}
 load = {}
+rocks = [list(line) for line in lines]
+
+# assume that that the load is periodic with a fixed lead-in
+# (i.e. 3,4,5,1,2,1,2,1,2,...1,2)
 for i in range(1_000_000_000):
     rocks = spin(rocks)
     hash = ""
     for row in rocks:
         hash += "".join(row)
-    if hash in seen:
-        print(f"step {i} was also step {seen[hash]}")
+    if hash in seen: # we've hit a loop, can exit and find the period + offset
         break
     seen[hash] = i
     load[i] = get_load(rocks)
@@ -76,8 +79,8 @@ period = i - seen[hash]
 offset = seen[hash]
     
 # assume periodic
-remaining_moves = 1_000_000_000 - offset
+remaining_moves = 1_000_000_000 - offset - 1 # 1 is to adjust for 1-vs-0 indexed.
 position  = (remaining_moves % period) + offset
-load = load[position-1] # I had an off-by-one somewhere, this accounts for it.
+load = load[position]
 
 print(f"Part 2: {load}")
